@@ -18,7 +18,7 @@ serialPort = serial_rx_tx.SerialPort()
 logFile = None
 
 root = tk.Tk() # create a Tk root window
-root.title( "TERMINAL - Serial Data Terminal v1.00" )
+root.title( "TERMINAL - Serial Data Terminal v1.01" )
 # set up the window size and position
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -66,9 +66,15 @@ def OpenCommand():
         baudrate = baudrate_edit.get()
         serialPort.Open(comport,baudrate)
         button_openclose.config(text='Close COM Port')
+        textbox.insert('1.0', "COM Port Opened\r\n")
     elif button_openclose.cget("text") == 'Close COM Port':
-        serialPort.Close()
-        button_openclose.config(text='Open COM Port')
+        if button_replaylog.cget('text') == 'Stop Replay Log':
+            textbox.insert('1.0',"Stop Log Replay first\r\n")
+        else:
+            serialPort.Close()
+            button_openclose.config(text='Open COM Port')
+            textbox.insert('1.0',"COM Port Closed\r\n")
+
 
 def ClearDataCommand():
     textbox.delete('1.0',END)
@@ -83,10 +89,13 @@ def SendDataCommand():
         textbox.insert('1.0', "Not sent - COM port is closed\r\n")
 
 def ReplayLogFile():
-    if logFile != None:
+    try:
+      if logFile != None:
         readline = logFile.readline()
         global serialPort
         serialPort.Send(readline)
+    except:
+      print("Exception in ReplayLogFile()")
 
 def ReplayLogThread():
     while True:
@@ -95,9 +104,6 @@ def ReplayLogThread():
         if serialPort.IsOpen():
             if logFile != None:
                 ReplayLogFile()
-        else:
-            textbox.insert('1.0', "COM port is closed\r\n")
-
 
 def OpenLogFile():
     if not serialPort.IsOpen():
@@ -111,7 +117,7 @@ def OpenLogFile():
                 logFile = open(root.filename,'r')
                 _thread.start_new_thread(ReplayLogThread, ())
                 button_replaylog.config(text='Stop Log Replay')
-                textbox.insert('1.0', "Sending log file messages to open COM port\r\n")
+                textbox.insert('1.0', "Sending to open COM port from: " + root.filename + "\r\n")
             except:
                 textbox.insert('1.0', "Could not open log file\r\n")
         else:
@@ -123,19 +129,18 @@ def OpenLogFile():
 def DisplayAbout():
     tk.messagebox.showinfo(
     "About",
-    "Written by Dale Gambill (same as PetTheHorses on Youtube)\r\n\r\n" 
+    "Written by Dale Gambill (same as 'Software Guy For You' on Youtube)\r\n\r\n" 
     "SDTERM demonstrates event-handling of serial COM port data as follows:\r\n\r\n" 
     "1 - getting messages from a COM port via a callback function\r\n" 
     "2 - sending messages from a file to the COM port, one at a time\r\n" 
     "3 - sending log file messages and receiving messages at the same time\r\n\r\n" 
-    "Source code at: Github URL\r\n")
+    "Source code at: Github URL: https://github.com/dalegambill/PythonTerminal\r\n")
 
 def TutorialsWebPage():
     webbrowser.open("https://www.youtube.com/channel/UCouhHzMMU9c-Qh-TkZl5GDg",
                     new=1, autoraise=True)
-#
-# button definitions
-#END#COM Port open/close button
+
+# COM Port open/close button
 button_openclose = Button(root,text="Open COM Port",width=20,command=OpenCommand)
 button_openclose.config(font="bold")
 button_openclose.place(x=210,y=30)
@@ -155,7 +160,7 @@ button_replaylog = Button(root,text="Replay Log",width=20,command=OpenLogFile)
 button_replaylog.config(font="bold")
 button_replaylog.place(x=420,y=30)
 
-#Aboutaboutbutton
+#About button
 button_about = Button(root,text="About",width=16,command=DisplayAbout)
 button_about.config(font="bold")
 button_about.place(x=620,y=30)

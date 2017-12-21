@@ -1,4 +1,10 @@
+12/19/2017, Dale Gambill
+------------------------
+I fixed some minor issues, such as requiring the COM port to be open if
+the user selects to replay a log file.
+
 8/31/2017, Dale Gambill
+-----------------------
 I have written serial data terminal programs in C, C++, and C#.  I wanted to
 write one in Python 3.5 so I could compare the features of the languages.
 

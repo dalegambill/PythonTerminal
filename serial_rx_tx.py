@@ -23,14 +23,14 @@ class SerialPort:
             if self.serialport.is_open():
                 self.serialport.close()
         except:
-            print("Destructor error closing COM port: %s", sys.exc_info()[0] )
+            print("Destructor error closing COM port: ", sys.exc_info()[0] )
 
     def RegisterReceiveCallback(self,aReceiveCallback):
         self.ReceiveCallback = aReceiveCallback
         try:
             _thread.start_new_thread(self.SerialReadlineThread, ())
         except:
-            print("Error starting Read thread: %s", sys.exc_info()[0])
+            print("Error starting Read thread: ", sys.exc_info()[0])
 
     def SerialReadlineThread(self):
         while True:
@@ -40,7 +40,7 @@ class SerialPort:
                     if self.receivedMessage != "":
                         self.ReceiveCallback(self.receivedMessage)
             except:
-                print("Error reading COM port: %s", sys.exc_info()[0])
+                print("Error reading COM port: ", sys.exc_info()[0])
 
     def IsOpen(self):
         return self.isopen
@@ -54,7 +54,7 @@ class SerialPort:
                 self.serialport.open()
                 self.isopen = True
             except:
-                print("Error opening COM port: %s", sys.exc_info()[0])
+                print("Error opening COM port: ", sys.exc_info()[0])
 
 
     def Close(self):
@@ -63,7 +63,7 @@ class SerialPort:
                 self.serialport.close()
                 self.isopen = False
             except:
-                print("Close error closing COM port: %s", sys.exc_info()[0])
+                print("Close error closing COM port: ", sys.exc_info()[0])
 
     def Send(self,message):
         if self.isopen:
@@ -73,7 +73,7 @@ class SerialPort:
                 newmessage += '\r\n'
                 self.serialport.write(newmessage.encode('utf-8'))
             except:
-                print("Error sending message: %s", sys.exc_info()[0] )
+                print("Error sending message: ", sys.exc_info()[0] )
             else:
                 return True
         else:

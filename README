@@ -1,0 +1,13 @@
+Dale Gambill, 3/10/2018
+
+I wrote this serial data program in Python 3.5 so that I could compare it to the one I wrote in C#.
+
+I wrote TERMINAL.PY and SERIAL_RX_TX.PY on Windows 10 using the Pycharm IDE.
+
+These two modules show you how to use serial COM ports on Windows 10 to do the following:
+
+- send and receive lines of text terminated with \n
+- handle received data with your own event-handler
+- send lines of text at regular intervals from a file (replay a log file)
+
+
